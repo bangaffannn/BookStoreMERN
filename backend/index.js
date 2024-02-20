@@ -1,4 +1,4 @@
-import express from "express";
+import express, { response } from "express";
 import { PORT, mongoDBURL, SERVERPORT } from "./config.js";
 import mongoose from "mongoose";
 
@@ -39,12 +39,27 @@ app.post("/books", async (request, response) => {
   }
 });
 
+// Route for Get All Books from database
+app.get("/books", async (request, response) => {
+  try {
+    const books = await Book.find({});
+
+    return response.status(200).json({
+      count: books.length,
+      data: books,
+    });
+  } catch (error) {
+    console.log(error.message);
+    response.status(500).send({ message: error.message });
+  }
+});
+
 mongoose
   .connect(mongoDBURL)
   .then(() => {
     console.log("App connected to database");
-    app.listen(SERVERPORT, () => {
-      console.log(`App is listening to port: ${SERVERPORT}`);
+    app.listen(PORT, () => {
+      console.log(`App is listening to port: ${PORT}`);
     });
   })
   .catch((error) => {
