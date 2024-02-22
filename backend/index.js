@@ -67,6 +67,7 @@ app.get("/books/:id", async (request, response) => {
   }
 });
 
+// Route for update the books from database
 app.put("/books/:id", async (request, response) => {
   try {
     // Check if all required fields are provided in the request body
@@ -95,6 +96,31 @@ app.put("/books/:id", async (request, response) => {
 
     // Return success message
     return response.status(200).json({ message: "Book updated successfully" });
+  } catch (error) {
+    console.log(error.message);
+    return response.status(500).send({ message: error.message });
+  }
+});
+
+// Route for delete a book
+
+app.delete("/books/:id", async (request, response) => {
+  try {
+    const { id } = request.params;
+
+    // Assuming `Book` is a mongoose model for handling MongoDB interactions
+    // You need to import `Book` and mongoose at the top of your file
+
+    // Attempt to delete the book from the database
+    const result = await Book.findByIdAndDelete(id);
+
+    // Check if the book with the given ID exists
+    if (!result) {
+      return response.status(404).send({ message: "Book not found" });
+    }
+
+    // Return success message
+    return response.status(200).json({ message: "Book deleted successfully" });
   } catch (error) {
     console.log(error.message);
     return response.status(500).send({ message: error.message });
