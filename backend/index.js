@@ -40,7 +40,7 @@ app.post("/books", async (request, response) => {
 });
 
 // Route for Get All Books from database
-app.get("/books", async (request, response) => {
+app.get("/book", async (request, response) => {
   try {
     const books = await Book.find({});
 
@@ -64,6 +64,40 @@ app.get("/books/:id", async (request, response) => {
   } catch (error) {
     console.log(error.message);
     response.status(500).send({ message: error.message });
+  }
+});
+
+app.put("/books/:id", async (request, response) => {
+  try {
+    // Check if all required fields are provided in the request body
+    if (
+      !request.body.title ||
+      !request.body.author ||
+      !request.body.publishYear
+    ) {
+      return response.status(400).send({
+        message: "Send all required fields: title, author, publishYear",
+      });
+    }
+
+    const { id } = request.params;
+
+    // Assuming `Book` is a mongoose model for handling MongoDB interactions
+    // You need to import `Book` and mongoose at the top of your file
+
+    // Update the book information in the database
+    const result = await Book.findByIdAndUpdate(id, request.body);
+
+    // Check if the book with the given ID exists
+    if (!result) {
+      return response.status(404).send({ message: "Book not found" });
+    }
+
+    // Return success message
+    return response.status(200).json({ message: "Book updated successfully" });
+  } catch (error) {
+    console.log(error.message);
+    return response.status(500).send({ message: error.message });
   }
 });
 
