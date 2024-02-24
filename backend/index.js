@@ -1,6 +1,7 @@
 import express, { response } from "express";
 import { PORT, mongoDBURL, SERVERPORT } from "./config.js";
 import mongoose from "mongoose";
+import cors from 'cors';
 
 import { Book } from "./models/bookModel.js";
 import booksRoute from './routes/booksRoute.js'
@@ -12,7 +13,7 @@ app.use(express.json());
 
 // Middleware for handling CORS Policy
 // OPTION 1: Allow All Origins with default of CORS
-// app.use(cors());
+app.use(cors());
 
 // OPTION 2: Allow custom origins
 // app.use(
